@@ -80,7 +80,7 @@ export default {
             evt.preventDefault();
             await axios
                 .post(
-                    "http://homeserver:5000/slack/invite/send",
+                    process.env.VUE_APP_API_URL + "/slack/invite/send",
                     {
                         email: this.email
                     },
@@ -130,7 +130,7 @@ export default {
             let response;
             try {
                 response = await axios.post(
-                    "http://homeserver:5000/slack/invite",
+                    process.env.VUE_APP_API_URL + "/slack/invite",
                     {
                         code: parsed.code,
                         state: parsed.state
@@ -143,7 +143,9 @@ export default {
             localStorage.setItem("token", response.data.access_token);
             this.token = response.data.access_token;
         }
-        let { data } = await axios.get("http://homeserver:5000/slack/invite");
+        let { data } = await axios.get(
+            process.env.VUE_APP_API_URL + "/slack/invite"
+        );
         this.authURL = data.url;
 
         if (this.token) {
