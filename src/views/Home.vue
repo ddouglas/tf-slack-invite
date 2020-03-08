@@ -114,10 +114,9 @@ export default {
                         "Our apologies " +
                         this.character +
                         ". We're unable to invite you to slack due to an error we received from Slack. The error is below for your information";
-
-                    localStorage.removeItem("token");
-                    this.token = "";
                 });
+            localStorage.removeItem("token");
+            this.token = "";
         },
         onReset() {
             localStorage.removeItem("token");
