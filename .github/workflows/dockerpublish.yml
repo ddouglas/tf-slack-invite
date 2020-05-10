@@ -7,7 +7,7 @@ on:
       - v*
 env:
   # TODO: Change variable to your image's name.
-  IMAGE_NAME: ui
+  IMAGE_NAME: tf-slack-invite
 
 jobs:
   # Push image to GitHub Packages.
