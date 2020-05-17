@@ -1,0 +1,35 @@
+name: Docker
+
+on:
+  push:
+    # Publish `v1.2.3` tags as releases.
+    tags:
+      - v*
+env:
+  # TODO: Change variable to your image's name.
+  IMAGE_NAME: ui
+
+jobs:
+  # Push image to GitHub Packages.
+  # See also https://docs.docker.com/docker-hub/builds/
+  push:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push'
+
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v1
+        with:
+          node-version: "12.0"
+      - run: npm ci && npm run build
+      - name: Copy Files to Prod
+        uses: garygrossgarten/github-action-scp@release
+        with:
+          local: dist
+          remote: /var/www/slack
+          host: ${{ secrets.SSH_PROD_HOST }}
+          port: ${{ secrets.SSH_PROD_PORT }}
+          recursive: true
+          verbose: true
+          username: ${{ secrets.SSH_PROD_USER }}
+          privateKey: ${{ secrets.SSH_PROD_PRIVATE_KEY }}
