@@ -4,13 +4,13 @@
             <b-col lg="12">
                 <b-alert v-if="invite.success" variant="success" show>
                     <h4>Congratulations, You're almost there!</h4>
-                    {{invite.message}}
+                    {{ invite.message }}
                 </b-alert>
                 <b-alert variant="danger" v-else show>
                     <h4>Uh Oh! We encountered an error</h4>
-                    {{invite.message}}
+                    {{ invite.message }}
                     <br />
-                    {{invite.error}}
+                    {{ invite.error }}
                 </b-alert>
             </b-col>
         </b-row>
@@ -22,11 +22,14 @@
             <b-col lg="6">
                 <b-card header="Welcome to the Tweetfleet Slack Inviter">
                     <b-card-text>
-                        Before getting started, please make sure you have an email address that you are comfortable with the administartors of the TF Slack having access to. We
-                        will never use this email address outside of this inviter, but slack requires a valid email address for the invitation. Once you are ready, click the "Login With EveOnline SSO" below to kick off the invitation process.
-                        <a
-                            :href="authURL"
-                        >
+                        Before getting started, please make sure you have an
+                        email address that you are comfortable with the
+                        administartors of the TF Slack having access to. We will
+                        never use this email address outside of this inviter,
+                        but slack requires a valid email address for the
+                        invitation. Once you are ready, click the "Login With
+                        EveOnline SSO" below to kick off the invitation process.
+                        <a :href="authURL">
                             <img
                                 src="https://web.ccpgamescdn.com/eveonlineassets/developers/eve-sso-login-black-large.png"
                                 class="mx-auto d-block mt-1"
@@ -36,15 +39,32 @@
                 </b-card>
             </b-col>
             <b-col lg="6" v-if="character && token">
-                <b-card :header="'Welcome Back ' + character ">
+                <b-card :header="'Welcome Back ' + character">
                     <b-card-text>
-                        The final step to this process is to input an email address below. From there we will send you an invitation, via Slack, to the TF Slack and you can join us there
-                        <b-form @submit="onSubmit" @reset="onReset" class="mt-2">
-                            <b-form-group label="My Email Address:" label-for="email-input">
-                                <b-form-input id="email-input" v-model="email" />
+                        The final step to this process is to input an email
+                        address below. From there we will send you an
+                        invitation, via Slack, to the TF Slack and you can join
+                        us there
+                        <b-form
+                            @submit="onSubmit"
+                            @reset="onReset"
+                            class="mt-2"
+                        >
+                            <b-form-group
+                                label="My Email Address:"
+                                label-for="email-input"
+                            >
+                                <b-form-input
+                                    id="email-input"
+                                    v-model="email"
+                                />
                             </b-form-group>
-                            <b-button type="submit" variant="primary">Submit</b-button>
-                            <b-button type="reset" variant="danger" class="ml-1">Reset</b-button>
+                            <b-button type="submit" variant="primary"
+                                >Submit</b-button
+                            >
+                            <b-button type="reset" variant="danger" class="ml-1"
+                                >Reset</b-button
+                            >
                         </b-form>
                     </b-card-text>
                 </b-card>
@@ -71,8 +91,8 @@ export default {
                 done: false,
                 success: false,
                 error: "",
-                message: ""
-            }
+                message: "",
+            },
         };
     },
     methods: {
@@ -82,25 +102,21 @@ export default {
                 .post(
                     process.env.VUE_APP_API_URL + "/slack/invite/send",
                     {
-                        email: this.email
+                        email: this.email,
                     },
                     {
                         headers: {
-                            Authorization: "Bearer " + this.token
-                        }
+                            Authorization: "Bearer " + this.token,
+                        },
                     }
                 )
-                .then(response => {
+                .then((response) => {
+                    console.log(response.data);
                     this.invite.done = true;
                     this.invite.success = true;
-                    this.invite.message =
-                        "Congrats " +
-                        this.character +
-                        ". You have successfully been invited to Tweetfleet Slack. You should receive an email at " +
-                        this.email +
-                        " from Slack with the invitation link to follow to complete your registeration.";
+                    this.invite.message = response.data.message;
                 })
-                .catch(error => {
+                .catch((error) => {
                     let response = error.response;
                     if (response.data.message) {
                         this.invite.error = response.data.message;
@@ -121,7 +137,7 @@ export default {
         onReset() {
             localStorage.removeItem("token");
             window.location = "/";
-        }
+        },
     },
     async mounted() {
         if (window.location.search.length > 1) {
@@ -132,7 +148,7 @@ export default {
                     process.env.VUE_APP_API_URL + "/slack/invite",
                     {
                         code: parsed.code,
-                        state: parsed.state
+                        state: parsed.state,
                     }
                 );
             } catch {
@@ -150,7 +166,7 @@ export default {
         if (this.token) {
             this.character = jwt_decode(this.token).name;
         }
-    }
+    },
 };
 </script> 
  
